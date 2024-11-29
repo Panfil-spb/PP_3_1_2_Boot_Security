@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить пользователя</title>
+</head>
+<body>
+<h2>Изменить пользователя</h2>
+<div>
+
+    <form th:action="@{/users/edit}" th:object="${user}" method="post">
+        <input type="hidden" name="id" th:value="${user.getId()}">
+        <fieldset>
+            <legend>Данные пользователя</legend>
+            <p>
+                <label th:for="name">Имя</label>
+                <input type="text" name="name" th:id="name" th:value="${user.getName()}">
+                <div style="color:indianred" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div>
+            </p>
+            <p>
+                <label th:for="last_name">Фамилия</label>
+                <input type="text" name="last_name" th:id="last_name" th:value="${user.getLast_name()}"><br/>
+                <div style="color:indianred" th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}">last_name error</div>
+            </p>
+            <p>
+                <label th:for="email">Почтовый ящик</label>
+                <input type="text" name="email" th:id="email" th:value="${user.getEmail()}"><br/>
+                <div style="color:indianred" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</div>
+            </p>
+            <p>
+                <label th:for="password">Пароль</label>
+                <input type="text" name="password" th:id="email" th:value="${user.getPassword()}"><br/>
+            <div style="color:indianred" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>
+            </p>
+
+        </fieldset>
+        <button style="background:#bfe3ef" type="submit">Изменить данные</button>
+    </form>
+
+
+    <br/>
+    <form th:action="@{/}">
+        <button style="background:#f3bfae" type="submit">Назад к списку пользователей</button>
+    </form>
+</div>
+</body>
+</html>

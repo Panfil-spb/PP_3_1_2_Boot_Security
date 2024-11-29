@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Все пользователи</title>
+</head>
+<body>
+<form th:action="@{/auth/logout}" th:method="POST">
+    <input type="submit" th:value="Logout" />
+</form>
+
+<h2>Все пользователи</h2>
+<div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Почтовый ящик</th>
+        </tr>
+
+        <tr th:each="user : ${users}">
+            <td th:text="${user.getId()}">Id</td>
+            <td th:text="${user.getName()}">Имя</td>
+            <td th:text="${user.getLast_name()}">Фамилия</td>
+            <td th:text="${user.getEmail()}">Почтовый ящик</td>
+
+            <td>
+                <form th:action="@{users/edit/{id}(id=${user.id})}" th:object="${user}">
+                    <button style="background:#bfe3ef" type="submit">Изменить</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{users/delete(id=${user.id})}" th:object="${user}">
+                    <input type="hidden" name="id" th:value="${user.id}">
+                    <button style="background:#f3bfae" type="submit">Удалить</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <form th:action="@{users/add}">
+        <button style="background:#bfe3ef" type="submit">Добавить нового пользователя</button>
+    </form>
+</div>
+
+</body>
+</html>
