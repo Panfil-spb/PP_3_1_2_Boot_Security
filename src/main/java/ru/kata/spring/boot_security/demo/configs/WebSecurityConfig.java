@@ -23,10 +23,10 @@ import ru.kata.spring.boot_security.demo.service.UserDetailsServiceImp;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
 
-    private final UserDetailsServiceImp userDetailsServiceImp;
+    private final UserDetailsService userDetailsServiceImp;
 
     @Autowired
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserDetailsServiceImp userDetailsServiceImp) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserDetailsService userDetailsServiceImp) {
         this.successUserHandler = successUserHandler;
 
         this.userDetailsServiceImp = userDetailsServiceImp;
@@ -42,9 +42,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/auth/login?error")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/admin/users", "/admin/users/edit/", "admin/users/", "admin/users/add").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasRole("USER")
                 .antMatchers("/auth/login", "/auth/registration").permitAll()
-                .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)
                 .permitAll()

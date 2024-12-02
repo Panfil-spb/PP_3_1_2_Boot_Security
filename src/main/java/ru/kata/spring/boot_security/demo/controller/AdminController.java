@@ -19,12 +19,10 @@ import javax.validation.Valid;
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
-    private final RolesRepository rolesRepository;
 
     @Autowired
     public AdminController(UserService userService, RolesRepository rolesRepository) {
         this.userService = userService;
-        this.rolesRepository = rolesRepository;
     }
 
     @GetMapping("/")
@@ -36,18 +34,8 @@ public class AdminController {
 
     @GetMapping(value = "/users")
     public String showAllUsers(ModelMap model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImp userDetailsImp = (UserDetailsImp) authentication.getPrincipal();
-        User user = userDetailsImp.getUser();
-        if (user.getRoles().contains(rolesRepository.findByName("ROLE_ADMIN").get())) {
-            model.addAttribute("users", userService.getAllUsers());
-            return "admin/users";
-        }
-        else {
-            return "redirect:/";
-        }
-
-
+        model.addAttribute("users", userService.getAllUsers());
+        return "admin/users";
     }
 
     @GetMapping(value = "/users/add")
