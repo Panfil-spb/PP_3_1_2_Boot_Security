@@ -24,17 +24,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/")
-    public String redirectUsersPage() {
-        return "redirect:/show";
-    }
 
-
-    @GetMapping("/show")
-    public String showUserInfo(ModelMap modelMap) {
+    @GetMapping("/")
+    public String showUserInfo(Model modelMap) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImp userDetailsImp = (UserDetailsImp) authentication.getPrincipal();
         modelMap.addAttribute("user", userDetailsImp.getUser());
+
         return "user/user";
     }
 

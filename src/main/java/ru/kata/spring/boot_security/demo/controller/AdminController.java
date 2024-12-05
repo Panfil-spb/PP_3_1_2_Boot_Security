@@ -1,35 +1,47 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jdbc.core.JdbcAggregateOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.RolesRepository;
 import ru.kata.spring.boot_security.demo.security.UserDetailsImp;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+    private final RolesRepository roleRepository;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminController(UserService userService, RolesRepository rolesRepository) {
+    public AdminController(UserService userService, RolesRepository rolesRepository, RolesRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/")
-    public String startURL() {
-        return "redirect:/admin/users";
+    public String startURL(ModelMap modelMap) {
+        modelMap.addAttribute("users", userService.getAllUsers());
+        modelMap.addAttribute("user", userService.getAuthUser());
+        modelMap.addAttribute("newUser", new User());
+        modelMap.addAttribute("allRoles", userService.getAllRole());
+        return "/admin/admin";
     }
-
 
 
     @GetMapping(value = "/users")
@@ -38,29 +50,33 @@ public class AdminController {
         return "admin/users";
     }
 
-    @GetMapping(value = "/users/add")
+    @GetMapping(value = "/add")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
         return "admin/addUser";
     }
 
-    @PostMapping(value = "/users/add")
-    public String createNewUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "admin/addUser";
-        }
+    @PostMapping(value = "/add")
+    public String createNewUser(@ModelAttribute("newUser") @Valid User user, BindingResult bindingResult) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + user.getRoles());
+
+        Set<Role> roles = user.getRoles().stream()
+                .map(roleId -> roleRepository.findById(roleId.getId()).orElseThrow())
+                .collect(Collectors.toSet());
+        user.setRoles(roles);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.addUser(user);
-        return "redirect:/";
+        return "redirect:/admin/";
     }
 
-    @GetMapping(value = "/users/edit/{id}")
+    @GetMapping(value = "/edit/{id}")
     public String editUser(ModelMap model, @PathVariable("id") Long id) {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
         return "admin/editUser";
     }
 
-    @PostMapping(value = "/users/edit")
+    @PostMapping(value = "/edit")
     public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/editUser";
@@ -69,10 +85,10 @@ public class AdminController {
         return "redirect:/";
     }
 
-    @DeleteMapping("/users/delete")
+    @DeleteMapping("/delete")
     public String deleteUserById(@RequestParam("id") String id) {
         userService.deleteUser(Long.parseLong(id));
-        return "redirect:/";
+        return "redirect:/admin/";
     }
 
     @GetMapping("/users/{id}")

@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +24,6 @@ public class User {
     private String name;
 
     @Column(name = "last_name")
-    @NotEmpty(message = "Поле 'Фамилия' не может быть пустым")
     @Size(min = 2, max = 20, message = "Поле 'Фамилия' должно быть от 2 до 20 символов")
     private String last_name;
 
@@ -43,33 +43,43 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> rolesUser = new HashSet<>();
 
     public Set<Role> getRoles() {
-        return roles;
+        return rolesUser;
     }
 
+    public String getStringRoles() {
+        StringBuilder rolesStr = new StringBuilder();
+        for (Role r: rolesUser) {
+            rolesStr.append(r.toString()).append(" ");
+        }
+        return rolesStr.toString();
+    }
+
+
     public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+        this.rolesUser = roles;
     }
 
     public void addRole(Role role) {
-        this.roles.add(role);
+        this.rolesUser.add(role);
     }
 
     public void removeRole(Role role) {
-        this.roles.remove(role);
+        this.rolesUser.remove(role);
     }
 
 
     public User() {
     }
 
-    public User(String name, String last_name, String email, String password) {
+    public User(String name, String last_name, String email, String password, Collection<Role> roles) {
         this.name = name;
         this.last_name = last_name;
         this.email = email;
         this.password = password;
+        this.rolesUser = (Set<Role>) roles;
     }
 
     public String getEmail() {

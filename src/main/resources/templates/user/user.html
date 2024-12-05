@@ -2,33 +2,104 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="UTF-8">
+    <title>User page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!--    <link href="/webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet"/>-->
+<!--    <script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>-->
+<!--    <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
 </head>
 <body>
-<form th:action="@{/auth/logout}" th:method="POST">
-    <input type="submit" th:value="Logout"/>
-</form>
 
-<div>
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Имя</th>
-            <th>Фамилия</th>
-            <th>Почтовый ящик</th>
-            <th>Пароль</th>
+<nav class="navbar navbar-dark bg-dark text-white">
+    <div class="container-fluid">
+        <!--        <div class="navbar-header">-->
+        <!--            <h5 th:text="${user.name} + ' with roles: ' + ${user.getStringRoles()}"/>-->
+        <!--        </div>-->
+        <div class="nav navbar-nav navbar-right">
+            <li>
+                <form th:action="@{/auth/logout}" th:method="POST">
+                    <input type="submit" class="btn btn-primary btn-lg btn-block" th:value="Logout" />
+                </form>
+            </li>
+        </div>
+    </div>
+</nav>
 
-        </tr>
+<div class="container-fluid">
+    <div class="row">
 
-        <tr>
-            <td th:text="${user.getId()}">Id</td>
-            <td th:text="${user.getName()}">Имя</td>
-            <td th:text="${user.getLast_name()}">Фамилия</td>
-            <td th:text="${user.getEmail()}">Почтовый ящик</td>
-            <td th:text="${user.getPassword()}">Пароль</td>
-        </tr>
-    </table>
+        <div class="col-2" style="padding: 0;padding-top: 15px;">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
+                    <a class="nav-link" href="/admin/">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active">User</a>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="col-10 bg-light">
+            <div class="tab-content" style="padding-top: 15px; height: 100vh">
+
+                <div class="tab-pane fade show active">
+                    <h2>User information-page</h2>
+                    <div class="card">
+                        <h5 div class="card-header">
+                            About user
+                        </h5>
+                        <div class="card-body text-center">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td th:text="${user.getId()}"/>
+                                    <td th:text="${user.getName()}"/>
+                                    <td th:text="${user.getLast_name()}"/>
+                                    <td th:text="${user.getEmail()}"/>
+                                    <td th:text="${user.getStringRoles()}"/>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<!--<div>-->
+<!--    <table>-->
+<!--        <tr>-->
+<!--            <th>Id</th>-->
+<!--            <th>Имя</th>-->
+<!--            <th>Фамилия</th>-->
+<!--            <th>Почтовый ящик</th>-->
+<!--            <th>Пароль</th>-->
+
+<!--        </tr>-->
+
+<!--        <tr>-->
+<!--            <td th:text="${user.getId()}">Id</td>-->
+<!--            <td th:text="${user.getName()}">Имя</td>-->
+<!--            <td th:text="${user.getLast_name()}">Фамилия</td>-->
+<!--            <td th:text="${user.getEmail()}">Почтовый ящик</td>-->
+<!--            <td th:text="${user.getPassword()}">Пароль</td>-->
+<!--        </tr>-->
+<!--    </table>-->
+<!--</div>-->
 
 </body>
 </html>

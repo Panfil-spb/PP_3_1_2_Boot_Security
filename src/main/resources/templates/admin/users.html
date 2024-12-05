@@ -3,6 +3,7 @@
 
 
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <meta charset="UTF-8">
     <title>Все пользователи</title>
 </head>
@@ -28,19 +29,19 @@
             <td th:text="${user.getEmail()}">Почтовый ящик</td>
 
             <td>
-                <form th:action="@{users/edit/{id}(id=${user.id})}" th:object="${user}">
+                <form th:action="@{/admin/edit/{id}(id=${user.id})}" th:object="${user}">
                     <button style="background:#bfe3ef" type="submit">Изменить</button>
                 </form>
             </td>
             <td>
-                <form th:action="@{users/delete(id=${user.id})}" th:object="${user}">
+                <form th:action="@{/admin/delete(id=${user.id})}" th:object="${user}">
                     <input type="hidden" name="id" th:value="${user.id}">
                     <button style="background:#f3bfae" type="submit">Удалить</button>
                 </form>
             </td>
         </tr>
     </table>
-    <form th:action="@{users/add}">
+    <form th:action="@{/admin/add}">
         <button style="background:#bfe3ef" type="submit">Добавить нового пользователя</button>
     </form>
 </div>
