@@ -6,6 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -74,7 +75,7 @@ public class User {
     public User() {
     }
 
-    public User(String name, String last_name, String email, String password, Collection<Role> roles) {
+    public User(String name, String last_name, String email, String password, List<Role> roles) {
         this.name = name;
         this.last_name = last_name;
         this.email = email;

@@ -26,6 +26,7 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public void editUser(User user) {
+        System.out.printf(user.getId().toString());
         entityManager.merge(user);
     }
 

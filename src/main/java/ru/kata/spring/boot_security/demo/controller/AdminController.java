@@ -17,6 +17,8 @@ import ru.kata.spring.boot_security.demo.security.UserDetailsImp;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,13 +59,12 @@ public class AdminController {
     }
 
     @PostMapping(value = "/add")
-    public String createNewUser(@ModelAttribute("newUser") @Valid User user, BindingResult bindingResult) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + user.getRoles());
+    public String createNewUser(@ModelAttribute("newUser") @Valid User user, @RequestParam("selectRoles") List<Long> roles, BindingResult bindingResult) {
 
-        Set<Role> roles = user.getRoles().stream()
-                .map(roleId -> roleRepository.findById(roleId.getId()).orElseThrow())
+        Set<Role> role = roles.stream()
+                .map(roleId -> roleRepository.findById(roleId).orElseThrow())
                 .collect(Collectors.toSet());
-        user.setRoles(roles);
+        user.setRoles(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.addUser(user);
         return "redirect:/admin/";
@@ -77,12 +78,14 @@ public class AdminController {
     }
 
     @PostMapping(value = "/edit")
-    public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "admin/editUser";
-        }
+    public String updateUser(@ModelAttribute("user") @Valid User user, @RequestParam("selectRoles") List<Long> roles, BindingResult bindingResult) {
+        Set<Role> role = roles.stream()
+                .map(roleId -> roleRepository.findById(roleId).orElseThrow())
+                .collect(Collectors.toSet());
+        user.setRoles(role);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.editUser(user);
-        return "redirect:/";
+        return "redirect:/admin/";
     }
 
     @DeleteMapping("/delete")
