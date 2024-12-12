@@ -28,9 +28,7 @@ public class UserController {
     @GetMapping("/")
     public String showUserInfo(Model modelMap) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImp userDetailsImp = (UserDetailsImp) authentication.getPrincipal();
-        modelMap.addAttribute("user", userDetailsImp.getUser());
-
+        modelMap.addAttribute("user",  ((UserDetailsImp) authentication.getPrincipal()).getUser());
         return "user/user";
     }
 

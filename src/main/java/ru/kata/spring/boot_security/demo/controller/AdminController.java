@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private final RolesRepository roleRepository;
+
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminController(UserService userService, RolesRepository rolesRepository, RolesRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public AdminController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.roleRepository = roleRepository;
+
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -58,14 +58,8 @@ public class AdminController {
 
     @PostMapping(value = "/add")
     public String createNewUser(@ModelAttribute("newUser") @Valid User user, BindingResult bindingResult) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + user.getRoles());
 
-        Set<Role> roles = user.getRoles().stream()
-                .map(roleId -> roleRepository.findById(roleId.getId()).orElseThrow())
-                .collect(Collectors.toSet());
-        user.setRoles(roles);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.addUser(user);
+        userService.addNewUserFromForm(user);
         return "redirect:/admin/";
     }
 
