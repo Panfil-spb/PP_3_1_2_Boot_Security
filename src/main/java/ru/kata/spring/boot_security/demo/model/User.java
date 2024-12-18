@@ -4,9 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -45,14 +43,22 @@ public class User {
     )
     private Set<Role> rolesUser = new HashSet<>();
 
+    public Set<Role> getRolesUser() {
+        return rolesUser;
+    }
+
+    public void setRolesUser(Set<Role> rolesUser) {
+        this.rolesUser = rolesUser;
+    }
+
     public Set<Role> getRoles() {
         return rolesUser;
     }
 
     public String getStringRoles() {
         StringBuilder rolesStr = new StringBuilder();
-        for (Role r: rolesUser) {
-            rolesStr.append(r.toString()).append(" ");
+        for (Role r : rolesUser) {
+            rolesStr.append(r.toString().split("_")[1]).append(" ");
         }
         return rolesStr.toString();
     }
@@ -121,6 +127,7 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 
     @Override
     public String toString() {

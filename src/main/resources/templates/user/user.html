@@ -13,9 +13,9 @@
 
 <nav class="navbar navbar-dark bg-dark text-white">
     <div class="container-fluid">
-        <!--        <div class="navbar-header">-->
-        <!--            <h5 th:text="${user.name} + ' with roles: ' + ${user.getStringRoles()}"/>-->
-        <!--        </div>-->
+                <div class="navbar-header">
+                    <h5 th:text="${user.name} + ' with roles: ' + ${user.getStringRoles()}"/>
+                </div>
         <div class="nav navbar-nav navbar-right">
             <li>
                 <form th:action="@{/auth/logout}" th:method="POST">
@@ -31,7 +31,7 @@
 
         <div class="col-2" style="padding: 0;padding-top: 15px;">
             <ul class="nav nav-pills flex-column">
-                <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')">
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a class="nav-link" href="/admin/">Admin</a>
                 </li>
                 <li class="nav-item">

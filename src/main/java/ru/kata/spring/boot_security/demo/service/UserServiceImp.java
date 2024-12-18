@@ -39,6 +39,7 @@ public class UserServiceImp implements UserService {
         Set<Role> roles = user.getRoles().stream()
                 .map(roleId -> roleService.getRoleById(roleId.getId()))
                 .collect(Collectors.toSet());
+
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         addUser(user);
@@ -46,6 +47,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.addUser(user);
     }
 
@@ -56,15 +58,14 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void editUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.editUser(user);
     }
 
     @Override
     public User getUserById(Long id) {
-
         return userDao.getUserById(id);
     }
-
 
 
     @Override

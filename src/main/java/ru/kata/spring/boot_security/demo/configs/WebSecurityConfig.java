@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().loginPage("/auth/login")
                 .loginProcessingUrl("/process_login")
                 .defaultSuccessUrl("/", true)
-                .failureUrl("/auth/login?error")
+                .failureUrl("/auth/login?error=true")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/admin/**", "/user/**").hasRole("ADMIN")
