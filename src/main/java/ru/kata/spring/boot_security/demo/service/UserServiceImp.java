@@ -7,10 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
+
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repositories.RolesRepository;
+import ru.kata.spring.boot_security.demo.repositories.UsersRepository;
 import ru.kata.spring.boot_security.demo.security.UserDetailsImp;
 
 import java.util.List;
@@ -22,16 +22,16 @@ import java.util.stream.Collectors;
 public class UserServiceImp implements UserService {
 
 
-    private UserDao userDao;
+    private final UsersRepository usersRepository;
     private RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
 
     @Autowired
-    public UserServiceImp(UserDao userDao, RoleService roleServiceImp, PasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
+    public UserServiceImp(RoleService roleServiceImp, PasswordEncoder passwordEncoder, UsersRepository usersRepository) {
         this.roleService = roleServiceImp;
         this.passwordEncoder = passwordEncoder;
+        this.usersRepository = usersRepository;
     }
 
     @Override
@@ -48,23 +48,23 @@ public class UserServiceImp implements UserService {
     @Override
     public void addUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.addUser(user);
+        usersRepository.save(user);
     }
 
     @Override
     public void deleteUser(Long id) {
-        userDao.deleteUser(id);
+        usersRepository.delete(usersRepository.getUserById(id));
     }
 
     @Override
     public void editUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.editUser(user);
+        usersRepository.save(user);
     }
 
     @Override
     public User getUserById(Long id) {
-        return userDao.getUserById(id);
+        return usersRepository.getUserById(id);
     }
 
 
@@ -77,6 +77,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+        return usersRepository.findAll();
+
     }
 }
